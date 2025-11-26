@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Party Hall Booking</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; background:#f5f5f5; }
+    .container { max-width: 600px; margin:auto; background:white; padding:20px; border-radius:12px; }
+    label { font-weight: bold; }
+    select, input { width:100%; padding:10px; margin-top:5px; margin-bottom:15px; }
+    .summary { background:#eee; padding:15px; border-radius:10px; }
+    .line { display:flex; justify-content:space-between; padding:5px 0; }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h2>Party Hall Booking</h2>
+
+  <label>Choose Package</label>
+  <select id="package">
+    <option value="one">One Hour – ₹1000 (Decoration only)</option>
+    <option value="three">Three Hours – ₹2500 (Bubble Entry + Fog Entry)</option>
+    <option value="premium3">Premium Three Hours – ₹3500 (Fog, Bubble, Cold Fire, Cake, Portrait Photos, Surprise Gift)</option>
+  </select>
+
+  <label>Number of People</label>
+  <input type="number" id="people" min="1" value="1">
+
+  <label>Name</label>
+  <input type="text" id="name" placeholder="Enter your name" required>
+
+  <label>Phone Number</label>
+  <input type="tel" id="phone" placeholder="Enter phone number" required>
+
+  <label>Date</label>
+  <input type="date" id="date" required>
+
+  <label>Start Time</label>
+  <input type="time" id="startTime" required>
+
+  <label>End Time</label>
+  <input type="time" id="endTime" required>
+
+  <h3>Booking Summary</h3>
+  <div class="summary">
+    <div class="line"><div>Date</div><div id="sumDate">—</div></div>
+    <div class="line"><div>Package Price</div><div id="sumPackage">—</div></div>
+    <div class="line"><div>People</div><div id="sumGuests">—</div></div>
+    <div class="line"><div>Extra Person Charges</div><div id="sumExtra">—</div></div>
+    <div class="line"><div>Hours</div><div id="sumHours">—</div></div>
+    <div class="line"><div>Start Time</div><div id="sumStart">—</div></div>
+    <div class="line"><div>End Time</div><div id="sumEnd">—</div></div>
+  </div>
+
+  <h3>Payment</h3>
+  <div class="summary">
+    <div class="line"><div>Amount to Pay</div><div id="payTotal">—</div></div>
+
+    <label>Transaction ID</label>
+    <input type="text" id="txnId" placeholder="Enter UPI Transaction ID" required>
+<div id="payTotal">—</div></div>
+
+    <label>Payment Method</label>
+    <select id="paymentMethod">
+      <option value="upi">UPI</option>
+    </select>
+
+    <div style="text-align:center; margin-top:15px;">
+      <p><strong>Scan to Pay (UPI)</strong></p>
+      <img id="qrImgSmall" alt="UPI QR" style="width:200px; height:200px;">
+      <p><strong>TAMATAM VIJAYA KUMARI</strong></p>
+      <p>UPI ID: <strong>9052651447@naviaxis</strong></p>
+    </div>
+  </div>
+
+  <button id="downloadReceipt" style="width:100%; padding:12px; background:#007bff; color:white; border:none; border-radius:8px; font-size:16px; cursor:pointer; margin-top:20px;">Download Receipt</button>
+
+</div>
+<script>const receiptBtn = document.getElementById('downloadReceipt');
+receiptBtn.addEventListener('click', () => {
+  const name = document.getElementById('name').value;
+  const phone = document.getElementById('phone').value;
+  const date = document.getElementById('date').value;
+  const packageTxt = document.getElementById('package').selectedOptions[0].textContent;
+  const people = document.getElementById('people').value;
+  const extra = document.getElementById('sumExtra').textContent;
+  const start = document.getElementById('sumStart').textContent;
+  const end = document.getElementById('sumEnd').textContent;
+  const total = document.getElementById('payTotal').textContent;
+
+  const txn = document.getElementById('txnId').value;
+
+  const content = `Receipt - Party Hall Booking
+
+Name: ${name}
+Phone: ${phone}
+Date: ${date}
+Package: ${packageTxt}
+People: ${people}
+Extra Charges: ${extra}
+Start Time: ${start}
+End Time: ${end}
+Total Paid: ${total}
+Transaction ID: ${txn}
+
+Thank you for booking!`;
+
+  const blob = new Blob([content], { type: 'text/plain' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'Booking_Receipt.txt';
+  a.click();
+  URL.revokeObjectURL(url);
+});
+
+function updateSummary() {
+  let pkg = document.getElementById('package').value;
+  let people = parseInt(document.getElementById('people').value) || 0;
+  let date = document.getElementById('date').value;
+
+  // PACKAGE PRICES
+  let packPrice = 0;
+  if (pkg === 'one') packPrice = 1000;
+  else if (pkg === 'three') packPrice = 2500;
+  else if (pkg === 'premium3') packPrice = 3500;
+
+  // AUTO CALCULATE END TIME
+  let start = document.getElementById('startTime').value;
+  let endField = document.getElementById('endTime');
+  if (start) {
+    let t = new Date('2000-01-01T' + start);
+    if (pkg === 'one') t.setHours(t.getHours() + 1);
+    if (pkg === 'three' || pkg === 'premium3') t.setHours(t.getHours() + 3);
+    endField.value = t.toTimeString().substring(0,5);
+  }
+
+  // EXTRA PERSON CHARGE (after 15 people)
+  let extra = 0;
+  if (people > 15) extra = (people - 15) * 100;
+
+  // TOTAL
+  let total = packPrice + extra;
+
+  // UPDATE SUMMARY
+  document.getElementById('sumDate').textContent = date || '—';
+  document.getElementById('sumPackage').textContent = `₹${packPrice}`;
+  document.getElementById('sumGuests').textContent = people;
+  document.getElementById('sumExtra').textContent = extra > 0 ? `${people - 15} × 100 = ₹${extra}` : `0`;
+  document.getElementById('sumHours').textContent = pkg === 'one' ? '1 Hr' : '3 Hrs';
+
+  const startText = date && start ? `${date} | ${start}` : '—';
+  const endText = date && endField.value ? `${date} | ${endField.value}` : '—';
+  document.getElementById('sumStart').textContent = startText;
+  document.getElementById('sumEnd').textContent = endText;
+
+  document.getElementById('payTotal').textContent = `₹${total}`;
+
+  // AUTO-GENERATE UPI QR
+  try {
+    const upiId = '9052651447@naviaxis';
+    const upiName = 'TAMATAM VIJAYA KUMARI';
+    const upiUri = `upi://pay?pa=${encodeURIComponent(upiId)}&pn=${encodeURIComponent(upiName)}&am=${total.toFixed(2)}&cu=INR&tn=${encodeURIComponent('Party hall booking')}`;
+    const qrSrc = 'https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=' + encodeURIComponent(upiUri);
+    document.getElementById('qrImgSmall').src = qrSrc;
+  } catch(err) { console.error(err); }
+}
+
+document.querySelectorAll('#package, #people, #name, #phone, #date, #startTime')
+  .forEach(el => el.addEventListener('change', updateSummary));
+
+updateSummary();
+</script>
+</body>
+</html>
