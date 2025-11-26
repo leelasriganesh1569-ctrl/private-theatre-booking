@@ -69,8 +69,8 @@
     <div style="text-align:center; margin-top:15px;">
       <p><strong>Scan to Pay (UPI)</strong></p>
       <img id="qrImgSmall" alt="UPI QR" style="width:200px; height:200px;">
-      <p><strong>TAMATAM VIJAYA KUMARI</strong></p>
-      <p>UPI ID: <strong>9052651447@naviaxis</strong></p>
+      <p><strong>PULA CHANDRA NAVEEN</strong></p>
+      <p>UPI ID: <strong>8897642410@ybl</strong></p>
     </div>
   </div>
 
@@ -159,8 +159,8 @@ function updateSummary() {
 
   // AUTO-GENERATE UPI QR
   try {
-    const upiId = '9052651447@naviaxis';
-    const upiName = 'TAMATAM VIJAYA KUMARI';
+    const upiId = '8897642410@ybl';
+    const upiName = 'PULA CHANDRA NAVEEN';
     const upiUri = `upi://pay?pa=${encodeURIComponent(upiId)}&pn=${encodeURIComponent(upiName)}&am=${total.toFixed(2)}&cu=INR&tn=${encodeURIComponent('Party hall booking')}`;
     const qrSrc = 'https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=' + encodeURIComponent(upiUri);
     document.getElementById('qrImgSmall').src = qrSrc;
@@ -174,3 +174,4 @@ updateSummary();
 </script>
 </body>
 </html>
+
