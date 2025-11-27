@@ -1,0 +1,414 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Premium Party Hall Booking — Leela Gari Vididhillu</title>
+  <style>
+    :root{
+      --bg:#070606;
+      --card:#0f0e0e;
+      --muted:#d1c9c2;
+      --gold:#c59e2a;
+      --gold-2:#e0b84b;
+      --glass: rgba(255,255,255,0.03);
+      --success:#10b981;
+      --danger:#ef4444;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Arial;
+      background:linear-gradient(180deg, #050404 0%, #0b0a0a 100%);
+      color:var(--muted);
+      -webkit-font-smoothing:antialiased;
+      padding:28px;
+      display:flex;
+      align-items:flex-start;
+      justify-content:center;
+    }
+
+    .wrap{
+      width:100%;
+      max-width:920px;
+      display:grid;
+      grid-template-columns: 1fr 380px;
+      gap:20px;
+    }
+
+    .brand{
+      color:var(--gold-2);
+      font-weight:700;
+      letter-spacing:0.6px;
+      margin-bottom:8px;
+    }
+    h1{margin:0;color:#fff;font-size:20px}
+    .subtitle{color:#bfb6ad;font-size:13px;margin-bottom:12px}
+
+    .card{
+      background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border:1px solid rgba(255,255,255,0.03);
+      padding:18px;border-radius:12px; box-shadow:0 10px 30px rgba(0,0,0,0.6);
+    }
+
+    form .row{display:flex;gap:12px}
+    .col{flex:1}
+    label{display:block;font-size:13px;color:var(--muted);margin-bottom:6px}
+    input[type="text"],input[type="tel"],input[type="date"],input[type="time"],select,input[type="number"]{
+      width:100%; padding:10px 12px; border-radius:8px; border:1px solid rgba(255,255,255,0.04);
+      background:transparent; color:#fff; font-size:14px;
+    }
+    input::placeholder{color:#9b948b}
+    select{appearance:none;background-image:none}
+
+    .packages{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .pkg{padding:12px;border-radius:10px;border:1px solid rgba(255,255,255,0.04);cursor:pointer;background:transparent;color:#fff}
+    .pkg.selected{box-shadow:0 6px 20px rgba(197,158,42,0.08);border-color:rgba(197,158,42,0.4); background:linear-gradient(90deg, rgba(197,158,42,0.06), rgba(224,184,75,0.02))}
+
+    .muted{color:#bfb6ad;font-size:13px}
+    .note{font-size:12px;color:#9e958c}
+
+    .summary {position:sticky; top:28px}
+    .summary .section-title{display:flex;align-items:center;gap:8px;color:#fff;font-weight:700}
+    .summary .line{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px dashed rgba(255,255,255,0.03);font-size:14px;color:var(--muted)}
+    .summary .total{font-weight:800;color:var(--gold-2);font-size:18px;padding-top:12px;text-align:right}
+
+    .btn{
+      display:inline-block;padding:11px 14px;border-radius:10px;background:linear-gradient(90deg,var(--gold),var(--gold-2));
+      color:#070606;font-weight:700;border:none;cursor:pointer;font-size:15px;
+    }
+    .btn.ghost{background:transparent;border:1px solid rgba(255,255,255,0.04);color:var(--muted)}
+    .danger{color:var(--danger)}
+    .success{color:var(--success)}
+
+    .qr-box{text-align:center;padding:12px;border-radius:10px;border:1px dashed rgba(255,255,255,0.03);background:linear-gradient(180deg, rgba(255,255,255,0.01), transparent)}
+    #qrImgSmall{width:180px;height:180px;border-radius:10px;border:6px solid rgba(0,0,0,0.4);background:#fff;margin:6px auto;display:block}
+
+    .small{font-size:13px;color:var(--muted)}
+
+    .soldout{color:var(--danger);font-weight:700;margin-top:8px}
+
+    footer{margin-top:18px;text-align:center;color:#8e887f;font-size:13px}
+
+    @media (max-width:980px){
+      .wrap{grid-template-columns:1fr; padding-bottom:60px}
+      .summary{position:static}
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <!-- LEFT: form -->
+    <section class="card">
+      <div class="brand">leela gari vididhillu</div>
+      <h1>Premium Party Hall Booking</h1>
+      <div class="subtitle">Private booking • secure UPI payment • instant receipt</div>
+
+      <form id="bookingForm" onsubmit="return false;">
+        <div class="row">
+          <div class="col">
+            <label for="name">Your name</label>
+            <input id="name" type="text" placeholder="e.g., Pula Naveen" required>
+          </div>
+          <div class="col">
+            <label for="phone">Phone</label>
+            <input id="phone" type="tel" placeholder="+91 9xxxxxxxxx" required>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col">
+            <label for="date">Date</label>
+            <input id="date" type="date" required>
+          </div>
+          <div class="col">
+            <label for="startTime">Start time</label>
+            <input id="startTime" type="time" required>
+          </div>
+        </div>
+
+        <label>Choose package</label>
+        <div class="packages" id="packages">
+          <div class="pkg selected" data-price="1000" data-hours="1" data-key="one">1 Hour — ₹1000<br><span class="small">Decoration only</span></div>
+          <div class="pkg" data-price="2000" data-hours="2" data-key="two">2 Hours — ₹2000<br><span class="small">Simple 2-hr slot</span></div>
+          <div class="pkg" data-price="2500" data-hours="3" data-key="three">3 Hours — ₹2500<br><span class="small">Bubble entry + Fog entry</span></div>
+          <div class="pkg" data-price="3000" data-hours="3" data-key="three_no_combo">3 Hours (no combos) — ₹3000<br><span class="small">No bubble/fog</span></div>
+          <div class="pkg" data-price="3500" data-hours="3" data-key="premium3">Premium 3 Hours — ₹3500<br><span class="small">Bubble entry - Fog entry - Cold fire - Cake (named) - Potrait Photos - Gift</span></div>
+        </div>
+
+        <div style="margin-top:12px" class="row">
+          <div class="col">
+            <label for="people">Number of people</label>
+            <input id="people" type="number" min="1" value="1">
+            <div class="note">Max 15 included; extra ₹100 / person above 15.</div>
+          </div>
+          <div class="col">
+            <label for="txnId">Transaction ID (after UPI pay)</label>
+            <input id="txnId" type="text" placeholder="UPI txn id (e.g., AXF1234567)">
+          </div>
+        </div>
+
+        <div style="display:flex;gap:10px;margin-top:14px;align-items:center">
+          <button id="confirmBtn" class="btn">Confirm & Save Booking</button>
+          <button id="downloadBtn" class="btn ghost" type="button">Download Receipt</button>
+          <div style="margin-left:auto" class="small">All payments via UPI only</div>
+        </div>
+      </form>
+
+      <div id="msg" style="margin-top:12px"></div>
+      <footer class="small">Note: bookings saved locally (demo). For production use a backend/payment verification.</footer>
+    </section>
+
+    <!-- RIGHT: summary & payment -->
+    <aside class="card summary">
+      <div class="section-title">Booking summary</div>
+
+      <div class="line"><div>Date</div><div id="sumDate">—</div></div>
+      <div class="line"><div>Start time</div><div id="sumStart">—</div></div>
+      <div class="line"><div>End time</div><div id="sumEnd">—</div></div>
+      <div class="line"><div>Package</div><div id="sumPackage">—</div></div>
+      <div class="line"><div>People</div><div id="sumPeople">—</div></div>
+      <div class="line"><div>Extra person charges</div><div id="sumExtra">—</div></div>
+
+      <div class="line total"><div></div><div id="sumTotal">₹—</div></div>
+
+      <div style="margin-top:14px" class="qr-box">
+        <div style="font-weight:700;color:var(--gold-2)">UPI Payment</div>
+        <img id="qrImgSmall" alt="UPI QR">
+        <div style="margin-top:8px;font-weight:700;color:#fff">PULA CHANDRA  NAVEEN</div>
+        <div style="color:var(--muted)">UPI ID: <span style="color:var(--gold-2)">8897642410@ybl</span></div>
+        <div class="note" style="margin-top:8px">Scan QR to pay exact total. Then paste transaction id above and Confirm.</div>
+      </div>
+
+      <div id="soldNote" class="soldout" style="display:none">SLOT SOLD OUT — pick another time or date</div>
+    </aside>
+  </div>
+
+<script>
+(function(){
+  // Helpers & initial setup
+  const packagesEl = document.getElementById('packages');
+  const pkgEls = Array.from(packagesEl.querySelectorAll('.pkg'));
+  const dateEl = document.getElementById('date');
+  const startEl = document.getElementById('startTime');
+  const endEl = document.getElementById('sumEnd');
+  const peopleEl = document.getElementById('people');
+  const txnEl = document.getElementById('txnId');
+  const confirmBtn = document.getElementById('confirmBtn');
+  const downloadBtn = document.getElementById('downloadBtn');
+  const msg = document.getElementById('msg');
+  const soldNote = document.getElementById('soldNote');
+
+  // state
+  let selectedPkg = pkgEls[0]; // default
+  selectedPkg.classList.add('selected');
+
+  // Booked slots stored in localStorage as array of objects {date, start, end}
+  function loadBooked(){ return JSON.parse(localStorage.getItem('bookedSlots') || '[]'); }
+  function saveBooked(arr){ localStorage.setItem('bookedSlots', JSON.stringify(arr)); }
+
+  // prevent past dates
+  (function setMinDate(){
+    const today = new Date();
+    const yyyy = today.getFullYear();
+    const mm = String(today.getMonth()+1).padStart(2,'0');
+    const dd = String(today.getDate()).padStart(2,'0');
+    dateEl.min = `${yyyy}-${mm}-${dd}`;
+  })();
+
+  // package selection handlers
+  pkgEls.forEach(el=>{
+    el.addEventListener('click', () => {
+      pkgEls.forEach(x=>x.classList.remove('selected'));
+      el.classList.add('selected');
+      selectedPkg = el;
+      renderSummary();
+    });
+  });
+
+  // calculate end time based on package hours
+  function calcEndTime(startTime, hours){
+    if(!startTime) return '';
+    // combine with arbitrary date so JS Date works
+    const base = new Date('2000-01-01T' + startTime + ':00');
+    base.setHours(base.getHours() + Number(hours));
+    const hh = String(base.getHours()).padStart(2,'0');
+    const mm = String(base.getMinutes()).padStart(2,'0');
+    return `${hh}:${mm}`;
+  }
+
+  // compute extra charges & totals
+  function compute(){
+    const pkgPrice = Number(selectedPkg.dataset.price);
+    const hours = Number(selectedPkg.dataset.hours);
+    const people = Math.max(0, Number(peopleEl.value) || 0);
+    const extra = people > 15 ? (people-15)*100 : 0;
+    const total = pkgPrice + extra;
+    return {pkgPrice, hours, people, extra, total};
+  }
+
+  // check slot clash with existing bookings
+  function slotClashes(date, start, end){
+    if(!date || !start || !end) return false;
+    const booked = loadBooked();
+    // simple overlap check: [s,e) intersects booked [bs,be)
+    const toMinutes = t => { const [hh,mm] = t.split(':').map(Number); return hh*60+mm; };
+    const s = toMinutes(start), e = toMinutes(end);
+    for(const b of booked){
+      if(b.date !== date) continue;
+      const bs = toMinutes(b.start), be = toMinutes(b.end);
+      if(!(e <= bs || s >= be)) return true; // overlap
+    }
+    return false;
+  }
+
+  // render summary and QR
+  function renderSummary(){
+    const date = dateEl.value;
+    const startTime = startEl.value;
+    const hours = Number(selectedPkg.dataset.hours);
+    const endTime = calcEndTime(startTime, hours);
+
+    const {pkgPrice, people, extra, total} = compute();
+
+    document.getElementById('sumDate').textContent = date || '—';
+    document.getElementById('sumStart').textContent = startTime || '—';
+    document.getElementById('sumEnd').textContent = endTime || '—';
+    document.getElementById('sumPackage').textContent = `${selectedPkg.textContent.split('\\n')[0].trim()}`;
+    document.getElementById('sumPeople').textContent = people || '—';
+    document.getElementById('sumExtra').textContent = extra ? `₹${extra}` : '₹0';
+    document.getElementById('sumTotal').textContent = total ? `₹${total}` : '₹—';
+
+    // update QR (UPI) with amount
+    try{
+      const upiId = '8897642410@ybl';
+      const upiName = 'PULA CHANDRA  NAVEEN';
+      const upiUri = `upi://pay?pa=${encodeURIComponent(upiId)}&pn=${encodeURIComponent(upiName)}&am=${encodeURIComponent(total.toFixed(2))}&cu=INR&tn=${encodeURIComponent('Party hall booking')}`;
+      const qrSrc = 'https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=' + encodeURIComponent(upiUri);
+      const qEl = document.getElementById('qrImgSmall');
+      if(qEl) qEl.src = qrSrc;
+    }catch(e){ console.warn('QR update failed', e); }
+
+    // sold-out check
+    const clash = slotClashes(date, startTime, endTime);
+    soldNote.style.display = clash ? 'block' : 'none';
+    confirmBtn.disabled = clash;
+  }
+
+  // input listeners
+  [dateEl, startEl, peopleEl].forEach(el => el.addEventListener('change', renderSummary));
+  [dateEl, startEl, peopleEl].forEach(el => el.addEventListener('input', renderSummary));
+  // initial render
+  renderSummary();
+
+  // Confirm booking -> validate and save slot
+  confirmBtn.addEventListener('click', () => {
+    const name = document.getElementById('name').value.trim();
+    const phone = document.getElementById('phone').value.trim();
+    const date = dateEl.value;
+    const startTime = startEl.value;
+    const hours = Number(selectedPkg.dataset.hours);
+    const endTime = calcEndTime(startTime, hours);
+    const txn = txnEl.value.trim();
+
+    // basic validation
+    if(!name || !phone || !date || !startTime){
+      msg.innerHTML = '<div class="small danger">Please fill name, phone, date and start time.</div>';
+      return;
+    }
+    // require transaction id before final confirm
+    if(!txn){
+      msg.innerHTML = '<div class="small danger">Please enter UPI transaction ID after payment.</div>';
+      return;
+    }
+
+    // check clash again
+    if(slotClashes(date, startTime, endTime)){
+      msg.innerHTML = '<div class="small danger">This slot was just taken — choose another time.</div>';
+      renderSummary();
+      return;
+    }
+
+    // save booking
+    const booked = loadBooked();
+    booked.push({ id: 'BKG'+Date.now().toString().slice(-8), date, start: startTime, end: endTime, name, phone, package: selectedPkg.dataset.key, txn });
+    saveBooked(booked);
+
+    msg.innerHTML = '<div class="small success">Booking confirmed & saved locally. Receipt available to download.</div>';
+    // refresh summary / sold note
+    renderSummary();
+  });
+
+  // Download receipt (text file) including transaction id
+  document.getElementById('downloadBtn').addEventListener('click', () => {
+    const name = document.getElementById('name').value.trim();
+    const phone = document.getElementById('phone').value.trim();
+    const date = dateEl.value || '—';
+    const startTime = startEl.value || '—';
+    const hours = Number(selectedPkg.dataset.hours);
+    const endTime = calcEndTime(startTime, hours) || '—';
+    const pkgText = selectedPkg.textContent.split('\\n')[0].trim();
+    const people = peopleEl.value || '—';
+    const extra = document.getElementById('sumExtra').textContent;
+    const total = document.getElementById('sumTotal').textContent;
+    const txn = txnEl.value.trim() || '—';
+    const bookingId = 'BKG' + Date.now().toString().slice(-8);
+
+    const lines = [
+      'RECEIPT — Party Hall Booking',
+      'Booking ID: ' + bookingId,
+      '----------------------------------------',
+      `Name: ${name}`,
+      `Phone: ${phone}`,
+      `Date: ${date}`,
+      `Start Time: ${startTime}`,
+      `End Time: ${endTime}`,
+      `Package: ${pkgText}`,
+      `People: ${people}`,
+      `Extra charges: ${extra}`,
+      `Total Paid: ${total}`,
+      `Transaction ID: ${txn}`,
+      '----------------------------------------',
+      'Thank you for booking!'
+    ];
+
+    const blob = new Blob([lines.join('\\n')], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `receipt_${bookingId}.txt`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  });
+
+  // improve UX: when package changes, recalc & set end time if start exists
+  pkgEls.forEach(p=>p.addEventListener('click', () => {
+    // if start time present, auto set end time in form summary (visual)
+    const startVal = startEl.value;
+    if(startVal){
+      const hrs = Number(p.dataset.hours);
+      const endVal = calcEndTime(startVal, hrs);
+      // nothing to do with a dedicated end input in left form; summary shows calculated end
+    }
+    renderSummary();
+  }));
+
+  // on page load: set min date and try to set start to next hour available
+  (function initDefaults(){
+    // set default start to next full hour
+    const now = new Date();
+    now.setMinutes(0,0,0);
+    now.setHours(now.getHours()+1);
+    const hh = String(now.getHours()).padStart(2,'0');
+    const mm = String(now.getMinutes()).padStart(2,'0');
+    startEl.value = hh + ':' + mm;
+    renderSummary();
+  })();
+
+})();
+</script>
+</body>
+</html>
